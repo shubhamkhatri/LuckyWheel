@@ -65,35 +65,36 @@ public class profile extends AppCompatActivity {
     public static final int IMAGE_PICK_GALLERY_CODE = 1000;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private TextView timeLeft,nextGameText;
+    private TextView timeLeft, nextGameText;
     private String time, tt = "00:00:00";
     private Button play;
     private LinearLayout nextGame;
 
     String storagePermission[];
     ProgressDialog progressDialog;
-    boolean a=false,b=false;
-    TextView rewards,balance;
+    boolean a = false, b = false;
+    TextView rewards, balance;
     Boolean placed;
     Button buyTicket;
-    TextView no1,no2,no3;
+    TextView no1, no2, no3;
+    private String number = "11";
 
     @Override
     protected void onResume() {
         super.onResume();
         buyTicket = findViewById(R.id.buy_ticket);
-        no1=findViewById(R.id.no1);
-        no2=findViewById(R.id.no2);
-        no3=findViewById(R.id.no3);
-        SharedPreferences sharedpreferences = getSharedPreferences("preference",MODE_PRIVATE);
+        no1 = findViewById(R.id.no1);
+        no2 = findViewById(R.id.no2);
+        no3 = findViewById(R.id.no3);
+        SharedPreferences sharedpreferences = getSharedPreferences("preference", MODE_PRIVATE);
         int ba;
-        ba = sharedpreferences.getInt("balance",0);
+        ba = sharedpreferences.getInt("balance", 0);
 
         balance.setText(String.valueOf(ba));
 
-        placed = sharedpreferences.getBoolean("bets_placed",false);
+        placed = sharedpreferences.getBoolean("bets_placed", false);
 
-        if(placed){
+        if (placed) {
             buyTicket.setEnabled(false);
             buyTicket.setText("Ticket Bought");
         }
@@ -107,8 +108,8 @@ public class profile extends AppCompatActivity {
         getSupportActionBar().hide();
         buyTicket = findViewById(R.id.buy_ticket);
 
-        rewards=findViewById(R.id.reward);
-        balance=findViewById(R.id.balance);
+        rewards = findViewById(R.id.reward);
+        balance = findViewById(R.id.balance);
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Please Wait...");
         progressDialog.setMessage("Updating Credentials....");
@@ -117,9 +118,9 @@ public class profile extends AppCompatActivity {
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
         db = FirebaseFirestore.getInstance();
-        SharedPreferences sharedpreferences = getSharedPreferences("preference",MODE_PRIVATE);
+        SharedPreferences sharedpreferences = getSharedPreferences("preference", MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedpreferences.edit();
-        final String phone = sharedpreferences.getString("phone","abc");
+        final String phone = sharedpreferences.getString("phone", "abc");
 
         DocumentReference docRef = db.collection("users").document(phone);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -135,33 +136,32 @@ public class profile extends AppCompatActivity {
                         System.out.println("bool");
                         System.out.println(placed);
 
-                        if(Boolean.parseBoolean(document.get("bets_placed").toString())){
+                        if (Boolean.parseBoolean(document.get("bets_placed").toString())) {
                             System.out.print("bool");
                             System.out.println(placed);
                             buyTicket.setEnabled(false);
                             buyTicket.setText("Ticket Bought");
-                        }
-                        else{
+                        } else {
                             buyTicket.setEnabled(true);
                             buyTicket.setText("Buy Ticket");
                         }
-                        a=true;
+                        a = true;
                         SharedPreferences sharedpreferences = getSharedPreferences("preference", MODE_PRIVATE);
 
                         final SharedPreferences.Editor editor = sharedpreferences.edit();
 
-                        editor.putBoolean("bets_placed",Boolean.parseBoolean(document.get("bets_placed").toString()));
-                        editor.putInt("balance",Integer.parseInt(document.get("balance").toString()));
+                        editor.putBoolean("bets_placed", Boolean.parseBoolean(document.get("bets_placed").toString()));
+                        editor.putInt("balance", Integer.parseInt(document.get("balance").toString()));
 
                         editor.commit();
 
-                        if(a==true&&b==true){
+                        if (a == true && b == true) {
                             progressDialog.dismiss();
                         }
                     }
 
                 } else {
-                    Toast.makeText(getApplicationContext(),"OOPS! Some error occured.",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "OOPS! Some error occurred.", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -213,11 +213,11 @@ public class profile extends AppCompatActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 time = documentSnapshot.getString("time");
-                String ar[]=time.split(" ");
+                String ar[] = time.split(" ");
                 nextGameText.setText(ar[1]);
-                SharedPreferences sharedpreferences = getSharedPreferences("preference",MODE_PRIVATE);
+                SharedPreferences sharedpreferences = getSharedPreferences("preference", MODE_PRIVATE);
                 final SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putString("time",ar[1]);
+                editor.putString("time", ar[1]);
                 editor.commit();
                 try {
                     compareTime(time);
@@ -236,14 +236,13 @@ public class profile extends AppCompatActivity {
 
     private void compareTime(String time1) throws ParseException {
         progressDialog.hide();
-        b=true;
-        if(a==true&&b==true){
+        b = true;
+        if (a == true && b == true) {
             progressDialog.dismiss();
         }
         SimpleDateFormat sdf
                 = new SimpleDateFormat(
                 "dd-MM-yyyy HH:mm:ss");
-
 
         Date d1 = Calendar.getInstance().getTime();
         Date d2 = sdf.parse(String.valueOf(time1));
@@ -270,34 +269,33 @@ public class profile extends AppCompatActivity {
                         / (1000 * 60 * 60))
                         % 24;
 
-                if(difference_In_Hours/10==0 && difference_In_Minutes/10==0 && difference_In_Seconds/10==0)
-                    tt = "0"+difference_In_Hours + ":0" + difference_In_Minutes + ":0" + difference_In_Seconds;
-                if(difference_In_Hours/10==0 && difference_In_Minutes/10==0 && difference_In_Seconds/10!=0)
-                    tt = "0"+difference_In_Hours + ":0" + difference_In_Minutes + ":" + difference_In_Seconds;
-                if(difference_In_Hours/10==0 && difference_In_Minutes/10!=0 && difference_In_Seconds/10==0)
-                    tt = "0"+difference_In_Hours + ":" + difference_In_Minutes + ":0" + difference_In_Seconds;
-                if(difference_In_Hours/10!=0 && difference_In_Minutes/10==0 && difference_In_Seconds/10==0)
+                if (difference_In_Hours / 10 == 0 && difference_In_Minutes / 10 == 0 && difference_In_Seconds / 10 == 0)
+                    tt = "0" + difference_In_Hours + ":0" + difference_In_Minutes + ":0" + difference_In_Seconds;
+                if (difference_In_Hours / 10 == 0 && difference_In_Minutes / 10 == 0 && difference_In_Seconds / 10 != 0)
+                    tt = "0" + difference_In_Hours + ":0" + difference_In_Minutes + ":" + difference_In_Seconds;
+                if (difference_In_Hours / 10 == 0 && difference_In_Minutes / 10 != 0 && difference_In_Seconds / 10 == 0)
+                    tt = "0" + difference_In_Hours + ":" + difference_In_Minutes + ":0" + difference_In_Seconds;
+                if (difference_In_Hours / 10 != 0 && difference_In_Minutes / 10 == 0 && difference_In_Seconds / 10 == 0)
                     tt = difference_In_Hours + ":0" + difference_In_Minutes + ":0" + difference_In_Seconds;
-                if(difference_In_Hours/10!=0 && difference_In_Minutes/10!=0 && difference_In_Seconds/10==0)
+                if (difference_In_Hours / 10 != 0 && difference_In_Minutes / 10 != 0 && difference_In_Seconds / 10 == 0)
                     tt = difference_In_Hours + ":" + difference_In_Minutes + ":0" + difference_In_Seconds;
-                if(difference_In_Hours/10!=0 && difference_In_Minutes/10==0 && difference_In_Seconds/10!=0)
+                if (difference_In_Hours / 10 != 0 && difference_In_Minutes / 10 == 0 && difference_In_Seconds / 10 != 0)
                     tt = difference_In_Hours + ":0" + difference_In_Minutes + ":" + difference_In_Seconds;
-                if(difference_In_Hours/10==0 && difference_In_Minutes/10!=0 && difference_In_Seconds/10!=0)
-                    tt = "0"+difference_In_Hours + ":" + difference_In_Minutes + ":" + difference_In_Seconds;
-                if(difference_In_Hours/10!=0 && difference_In_Minutes/10!=0 && difference_In_Seconds/10!=0)
+                if (difference_In_Hours / 10 == 0 && difference_In_Minutes / 10 != 0 && difference_In_Seconds / 10 != 0)
+                    tt = "0" + difference_In_Hours + ":" + difference_In_Minutes + ":" + difference_In_Seconds;
+                if (difference_In_Hours / 10 != 0 && difference_In_Minutes / 10 != 0 && difference_In_Seconds / 10 != 0)
                     tt = difference_In_Hours + ":" + difference_In_Minutes + ":" + difference_In_Seconds;
                 timeLeft.setText(tt);
             }
 
             @Override
             public void onFinish() {
-                if(placed){
+                if (placed) {
                     timeLeft.setVisibility(View.INVISIBLE);
                     nextGame.setVisibility(View.INVISIBLE);
                     play.setVisibility(View.VISIBLE);
                     play.setClickable(true);
-                }
-                else{
+                } else {
                     progressDialog.show();
                     setTimeLeft();
                 }
@@ -311,7 +309,7 @@ public class profile extends AppCompatActivity {
         dp = (CircleImageView) findViewById(R.id.hm_profilePic);
         timeLeft = (TextView) findViewById(R.id.p_time_left);
         play = (Button) findViewById(R.id.p_play);
-        nextGameText= (TextView) findViewById(R.id.p_next_game);
+        nextGameText = (TextView) findViewById(R.id.p_next_game);
     }
 
     private void pickGallery() {
@@ -398,16 +396,17 @@ public class profile extends AppCompatActivity {
     public void logout(View view) {
         SharedPreferences sharedpreferences = getSharedPreferences("preference", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.putBoolean("logged",false);
+        editor.putBoolean("logged", false);
         editor.commit();
 
-        Intent intent = new Intent(profile.this,new_login.class);
+        Intent intent = new Intent(profile.this, new_login.class);
         startActivity(intent);
         finish();
     }
 
     public void buy(View view) {
-        Intent intent = new Intent(profile.this,buyTicket.class);
+        Intent intent = new Intent(profile.this, buyTicket.class);
+        intent.putExtra("number", number);
         startActivity(intent);
     }
 
@@ -415,35 +414,36 @@ public class profile extends AppCompatActivity {
         no1.setBackgroundResource(R.drawable.selected);
         no2.setBackgroundResource(R.drawable.rounded_button);
         no3.setBackgroundResource(R.drawable.rounded_button);
-
+        number = "11";
         // no1.setBackgroundColor(R.drawable.selected);
-      //  no1.getResources().getDrawable(R.drawable.selected);
-       // no2.getResources().getDrawable(R.drawable.rounded_button);
+        //  no1.getResources().getDrawable(R.drawable.selected);
+        // no2.getResources().getDrawable(R.drawable.rounded_button);
 
         // no3.getResources().getDrawable(R.drawable.rounded_button);
 
-     //   no2.setBackgroundColor(R.drawable.rounded_button);
-       // no3.setBackgroundColor(R.drawable.rounded_button);
+        //   no2.setBackgroundColor(R.drawable.rounded_button);
+        // no3.setBackgroundColor(R.drawable.rounded_button);
 
     }
 
     public void two(View view) {
-       // no2.setBackgroundResource(R.color.green);
-      //  no1.setBackgroundResource(R.color.yellow);
+        // no2.setBackgroundResource(R.color.green);
+        //  no1.setBackgroundResource(R.color.yellow);
         //no3.setBackgroundResource(R.color.yellow);
         //no1.setBackgroundColor(ContextCompat.getColor(this,R.color.green));
         no2.setBackgroundResource(R.drawable.selected);
         no1.setBackgroundResource(R.drawable.rounded_button);
         no3.setBackgroundResource(R.drawable.rounded_button);
+        number = "55";
 
         //  no2.setBackground(ContextCompat.getDrawable(this, R.drawable.selected));
         //no1.setBackground(ContextCompat.getDrawable(this, R.drawable.rounded_button));
-       // no3.setBackground(ContextCompat.getDrawable(profile.this, R.drawable.rounded_button));
+        // no3.setBackground(ContextCompat.getDrawable(profile.this, R.drawable.rounded_button));
 
-     //   no2.getResources().getDrawable(R.drawable.selected);
-       // no1.getResources().getDrawable(R.drawable.rounded_button);
+        //   no2.getResources().getDrawable(R.drawable.selected);
+        // no1.getResources().getDrawable(R.drawable.rounded_button);
 
-      //  no3.getResources().getDrawable(R.drawable.rounded_button);
+        //  no3.getResources().getDrawable(R.drawable.rounded_button);
     }
 
     public void three(View view) {
@@ -451,10 +451,11 @@ public class profile extends AppCompatActivity {
         no3.setBackgroundResource(R.drawable.selected);
         no1.setBackgroundResource(R.drawable.rounded_button);
         no2.setBackgroundResource(R.drawable.rounded_button);
-          // no3.getResources().getDrawable(R.drawable.selected);
-      //  no2.getResources().getDrawable(R.drawable.rounded_button);
+        number = "110";
+        // no3.getResources().getDrawable(R.drawable.selected);
+        //  no2.getResources().getDrawable(R.drawable.rounded_button);
 
-      //  no1.getResources().getDrawable(R.drawable.rounded_button);
+        //  no1.getResources().getDrawable(R.drawable.rounded_button);
 
     }
 }

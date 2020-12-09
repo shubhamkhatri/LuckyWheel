@@ -40,12 +40,12 @@ public class buyTicket extends AppCompatActivity {
 
     private Button add0, minus0, add1, minus1, add2, minus2, add3, minus3, add4, minus4, add5, minus5, add6, minus6, add7, minus7, add8, minus8, add9, minus9;
     private TextView total, sum0, sum1, sum2, sum3, sum4, sum5, sum6, sum7, sum8, sum9;
-    private int x0 = 0, x1 = 0, x2 = 0, x3 = 0, x4 = 0, x5 = 0, x6 = 0, x7 = 0, x8 = 0, x9 = 0,in0=0,in1=0,in2=0,in3=0,in4=0,
-    in5=0,in6=0,in7=0,in8=0,in9=0,mi0=0;
+    private int x0 = 0, x1 = 0, x2 = 0, x3 = 0, x4 = 0, x5 = 0, x6 = 0, x7 = 0, x8 = 0, x9 = 0, in0 = 0, in1 = 0, in2 = 0, in3 = 0, in4 = 0,
+            in5 = 0, in6 = 0, in7 = 0, in8 = 0, in9 = 0, mi0 = 0;
     private RadioButton zero, one, two, three, four, five, six, seven, eight, nine;
     List<Double> sum;
-    ProgressDialog progressDialog,progressDialog1;
-    TextView time,bal;
+    ProgressDialog progressDialog, progressDialog1;
+    TextView time, bal;
     Integer balance;
     List<Double> values = new ArrayList<>();
     List<Integer> amount = new ArrayList<>();
@@ -53,7 +53,8 @@ public class buyTicket extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     int a;
     String phone;
-    int flag=0,flag1=0;
+    int flag = 0, flag1 = 0;
+    int number;
 
 
     @Override
@@ -75,45 +76,49 @@ public class buyTicket extends AppCompatActivity {
         progressDialog1.setIndeterminate(true);
         progressDialog1.setCanceledOnTouchOutside(false);
         progressDialog1.setCancelable(false);
-        SharedPreferences sharedpreferences = getSharedPreferences("preference",MODE_PRIVATE);
-        String timing = sharedpreferences.getString("time","00:00:00");
-        balance = sharedpreferences.getInt("balance",0);
-        phone = sharedpreferences.getString("phone","");
+        SharedPreferences sharedpreferences = getSharedPreferences("preference", MODE_PRIVATE);
+        String timing = sharedpreferences.getString("time", "00:00:00");
+        balance = sharedpreferences.getInt("balance", 0);
+        phone = sharedpreferences.getString("phone", "");
 
-        time=findViewById(R.id.time);
-        bal=findViewById(R.id.balance);
-        bal.setText("Total Balance = "+balance);
+        Intent i = getIntent();
+        String num = i.getStringExtra("number");
+        number = Integer.parseInt(num);
+
+        time = findViewById(R.id.time);
+        bal = findViewById(R.id.balance);
+        bal.setText("Total Balance = " + balance);
         time.setText(timing);
-    db.collection("currentgame")
-            .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot value,
-                                    @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        Toast.makeText(getApplicationContext(),"OOPS! Some error occured.",Toast.LENGTH_LONG).show();
-                        return;
-                    }
-
-                    sum = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : value) {
-                        if (doc.get("value") != null) {
-                            values.add(doc.getDouble("value"));
-                            val.add(doc.getDouble("value").intValue());
-                            // System.out.println(doc.getDouble("value").intValue());
-                            progressDialog.hide();
+        db.collection("currentgame")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Toast.makeText(getApplicationContext(), "OOPS! Some error occured.", Toast.LENGTH_LONG).show();
+                            return;
                         }
-                    }
-                    Collections.sort(values);
-                    Collections.sort(val);
 
-                    System.out.println(val);
-                    sum.add(values.get(0));
-                    for(int i=0;i<values.size()-1;i++){
-                        sum.add(values.get(i+1)-values.get(i));
+                        sum = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : value) {
+                            if (doc.get("value") != null) {
+                                values.add(doc.getDouble("value"));
+                                val.add(doc.getDouble("value").intValue());
+                                // System.out.println(doc.getDouble("value").intValue());
+                                progressDialog.hide();
+                            }
+                        }
+                        Collections.sort(values);
+                        Collections.sort(val);
+
+                        System.out.println(val);
+                        sum.add(values.get(0));
+                        for (int i = 0; i < values.size() - 1; i++) {
+                            sum.add(values.get(i + 1) - values.get(i));
+                        }
+                        System.out.println(sum);
                     }
-                    System.out.println(sum);
-                }
-            });
+                });
 
 
         setDefault();
@@ -162,42 +167,42 @@ public class buyTicket extends AppCompatActivity {
         seven = (RadioButton) findViewById(R.id.number_seven);
         eight = (RadioButton) findViewById(R.id.number_eight);
         nine = (RadioButton) findViewById(R.id.number_nine);
-        minus0.setEnabled(false);
-        minus1.setEnabled(false);
-        minus2.setEnabled(false);
-        minus3.setEnabled(false);
-        minus4.setEnabled(false);
-        minus5.setEnabled(false);
-        minus6.setEnabled(false);
-        minus7.setEnabled(false);
-        minus8.setEnabled(false);
-        minus9.setEnabled(false);
+        //minus0.setEnabled(false);
+        //minus1.setEnabled(false);
+        //minus2.setEnabled(false);
+        //minus3.setEnabled(false);
+        //minus4.setEnabled(false);
+        //minus5.setEnabled(false);
+        //minus6.setEnabled(false);
+        //minus7.setEnabled(false);
+        //minus8.setEnabled(false);
+        //minus9.setEnabled(false);
 
 
     }
 
+    /*
     public void setsum() {
         add0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-minus0.setEnabled(true);
-                if(in0<sum.size()){
+                minus0.setEnabled(true);
+                if (in0 < sum.size()) {
 
                     double val0 = sum.get(in0);
 
-                    x0 = x0 +  Integer.valueOf((int) val0);
-                    if((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)>balance){
-                        Toast.makeText(getApplicationContext(),"Balance Low",Toast.LENGTH_LONG).show();
-                        x0 = x0 -  Integer.valueOf((int) val0);
+                    x0 = x0 + Integer.valueOf((int) val0);
+                    if ((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) > balance) {
+                        Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                        x0 = x0 - Integer.valueOf((int) val0);
 
-                    }
-                    else{
-                        bal.setText("Total Balance = "+((balance)-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                    } else {
+                        bal.setText("Total Balance = " + ((balance) - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
                         total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
 
                         sum0.setText(String.valueOf(x0));
-                        in0=in0+1;
-                        if(in0>=sum.size()){
+                        in0 = in0 + 1;
+                        if (in0 >= sum.size()) {
                             add0.setEnabled(false);
                         }
                     }
@@ -210,8 +215,8 @@ minus0.setEnabled(true);
         minus0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(in0>0){
-                    in0=in0-1;
+                if (in0 > 0) {
+                    in0 = in0 - 1;
 
                     double val0 = sum.get(in0);
 
@@ -219,14 +224,14 @@ minus0.setEnabled(true);
                     x0 = x0 - Integer.valueOf((int) val0);
                     //balance = balance + x0;
                     sum0.setText(String.valueOf(x0));
-                  //  balance = balance + (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9);
-                    bal.setText("Total Balance = "+(balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                    //  balance = balance + (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9);
+                    bal.setText("Total Balance = " + (balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
                     total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                    if(in0==0){
+                    if (in0 == 0) {
                         minus0.setEnabled(false);
                     }
-                    if(in0<sum.size()){
+                    if (in0 < sum.size()) {
                         add0.setEnabled(true);
                     }
                 }
@@ -237,23 +242,22 @@ minus0.setEnabled(true);
             @Override
             public void onClick(View v) {
                 minus1.setEnabled(true);
-                if(in1<sum.size()){
+                if (in1 < sum.size()) {
 
                     double val1 = sum.get(in1);
 
-                    x1 = x1 +  Integer.valueOf((int) val1);
-                    if((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)>balance){
-                        Toast.makeText(getApplicationContext(),"Balance Low",Toast.LENGTH_LONG).show();
-                        x1 = x1-Integer.valueOf((int) val1);
-                    }
-                    else{
+                    x1 = x1 + Integer.valueOf((int) val1);
+                    if ((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) > balance) {
+                        Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                        x1 = x1 - Integer.valueOf((int) val1);
+                    } else {
                         sum1.setText(String.valueOf(x1));
 
                         total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                        bal.setText("Total Balance = "+((balance)-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                        bal.setText("Total Balance = " + ((balance) - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
-                        in1=in1+1;
-                        if(in1>=sum.size()){
+                        in1 = in1 + 1;
+                        if (in1 >= sum.size()) {
                             add1.setEnabled(false);
                         }
                     }
@@ -266,21 +270,21 @@ minus0.setEnabled(true);
         minus1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(in1>0){
-                    in1=in1-1;
+                if (in1 > 0) {
+                    in1 = in1 - 1;
 
                     double val1 = sum.get(in1);
 
 
                     x1 = x1 - Integer.valueOf((int) val1);
                     sum1.setText(String.valueOf(x1));
-                    bal.setText("Total Balance = "+(balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                    bal.setText("Total Balance = " + (balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
                     total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                    if(in1==0){
+                    if (in1 == 0) {
                         minus1.setEnabled(false);
                     }
-                    if(in1<sum.size()){
+                    if (in1 < sum.size()) {
                         add1.setEnabled(true);
                     }
                 }
@@ -290,26 +294,23 @@ minus0.setEnabled(true);
             @Override
             public void onClick(View v) {
                 minus2.setEnabled(true);
-                if(in2<sum.size()){
+                if (in2 < sum.size()) {
 
                     double val2 = sum.get(in2);
 
-                    x2 = x2 +  Integer.valueOf((int) val2);
+                    x2 = x2 + Integer.valueOf((int) val2);
 
-                    if((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)>balance){
-                        Toast.makeText(getApplicationContext(),"Balance Low",Toast.LENGTH_LONG).show();
-                        x2 = x2-Integer.valueOf((int) val2);
+                    if ((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) > balance) {
+                        Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                        x2 = x2 - Integer.valueOf((int) val2);
 
-                    }
-
-
-                    else{
+                    } else {
                         sum2.setText(String.valueOf(x2));
-                        bal.setText("Total Balance = "+((balance)-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                        bal.setText("Total Balance = " + ((balance) - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
                         total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                        in2=in2+1;
-                        if(in2>=sum.size()){
+                        in2 = in2 + 1;
+                        if (in2 >= sum.size()) {
                             add2.setEnabled(false);
                         }
                     }
@@ -317,27 +318,26 @@ minus0.setEnabled(true);
                 }
 
 
-
             }
         });
         minus2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(in2>0){
-                    in2=in2-1;
+                if (in2 > 0) {
+                    in2 = in2 - 1;
 
                     double val2 = sum.get(in2);
 
 
                     x2 = x2 - Integer.valueOf((int) val2);
                     sum2.setText(String.valueOf(x2));
-                    bal.setText("Total Balance = "+(balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                    bal.setText("Total Balance = " + (balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
                     total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                    if(in2==0){
+                    if (in2 == 0) {
                         minus2.setEnabled(false);
                     }
-                    if(in2<sum.size()){
+                    if (in2 < sum.size()) {
                         add2.setEnabled(true);
                     }
                 }
@@ -347,23 +347,21 @@ minus0.setEnabled(true);
             @Override
             public void onClick(View v) {
                 minus3.setEnabled(true);
-                if(in3<sum.size()){
+                if (in3 < sum.size()) {
 
                     double val3 = sum.get(in3);
 
-                    x3 = x3 +  Integer.valueOf((int) val3);
-                    if((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)>balance){
-                        Toast.makeText(getApplicationContext(),"Balance Low",Toast.LENGTH_LONG).show();
-                        x3 = x3-Integer.valueOf((int) val3);
+                    x3 = x3 + Integer.valueOf((int) val3);
+                    if ((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) > balance) {
+                        Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                        x3 = x3 - Integer.valueOf((int) val3);
 
-                    }
-
-                     else{
+                    } else {
                         sum3.setText(String.valueOf(x3));
-                        bal.setText("Total Balance = "+((balance)-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                        bal.setText("Total Balance = " + ((balance) - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
                         total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                        in3=in3+1;
-                        if(in3>=sum.size()){
+                        in3 = in3 + 1;
+                        if (in3 >= sum.size()) {
                             add3.setEnabled(false);
                         }
                     }
@@ -374,21 +372,21 @@ minus0.setEnabled(true);
         minus3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(in3>0){
-                    in3=in3-1;
+                if (in3 > 0) {
+                    in3 = in3 - 1;
 
                     double val3 = sum.get(in3);
 
 
                     x3 = x3 - Integer.valueOf((int) val3);
                     sum3.setText(String.valueOf(x3));
-                    bal.setText("Total Balance = "+(balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                    bal.setText("Total Balance = " + (balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
                     total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                    if(in3==0){
+                    if (in3 == 0) {
                         minus3.setEnabled(false);
                     }
-                    if(in3<sum.size()){
+                    if (in3 < sum.size()) {
                         add3.setEnabled(true);
                     }
                 }
@@ -398,23 +396,22 @@ minus0.setEnabled(true);
             @Override
             public void onClick(View v) {
                 minus4.setEnabled(true);
-                if(in0<sum.size()){
+                if (in0 < sum.size()) {
 
                     double val4 = sum.get(in4);
 
-                    x4 = x4 +  Integer.valueOf((int) val4);
-                    if((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)>balance){
-                        Toast.makeText(getApplicationContext(),"Balance Low",Toast.LENGTH_LONG).show();
-                        x4 = x4-Integer.valueOf((int) val4);
+                    x4 = x4 + Integer.valueOf((int) val4);
+                    if ((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) > balance) {
+                        Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                        x4 = x4 - Integer.valueOf((int) val4);
 
-                    }
-                    else{
-                        bal.setText("Total Balance = "+((balance)-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                    } else {
+                        bal.setText("Total Balance = " + ((balance) - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
                         sum4.setText(String.valueOf(x4));
                         total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                        in4=in4+1;
-                        if(in4>=sum.size()){
+                        in4 = in4 + 1;
+                        if (in4 >= sum.size()) {
                             add4.setEnabled(false);
                         }
                     }
@@ -425,21 +422,21 @@ minus0.setEnabled(true);
         minus4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(in4>0){
-                    in4=in4-1;
+                if (in4 > 0) {
+                    in4 = in4 - 1;
 
                     double val4 = sum.get(in4);
 
 
                     x4 = x4 - Integer.valueOf((int) val4);
                     sum4.setText(String.valueOf(x4));
-                    bal.setText("Total Balance = "+(balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                    bal.setText("Total Balance = " + (balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
                     total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                    if(in4==0){
+                    if (in4 == 0) {
                         minus4.setEnabled(false);
                     }
-                    if(in4<sum.size()){
+                    if (in4 < sum.size()) {
                         add4.setEnabled(true);
                     }
                 }
@@ -449,24 +446,22 @@ minus0.setEnabled(true);
             @Override
             public void onClick(View v) {
                 minus5.setEnabled(true);
-                if(in5<sum.size()){
+                if (in5 < sum.size()) {
 
                     double val5 = sum.get(in5);
 
-                    x5 = x5 +  Integer.valueOf((int) val5);
-                    if((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)>balance){
-                        Toast.makeText(getApplicationContext(),"Balance Low",Toast.LENGTH_LONG).show();
-                        x5 = x5-Integer.valueOf((int) val5);
+                    x5 = x5 + Integer.valueOf((int) val5);
+                    if ((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) > balance) {
+                        Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                        x5 = x5 - Integer.valueOf((int) val5);
 
-                    }
-
-                    else{
-                        bal.setText("Total Balance = "+((balance)-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                    } else {
+                        bal.setText("Total Balance = " + ((balance) - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
                         sum5.setText(String.valueOf(x5));
                         total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                        in5=in5+1;
-                        if(in5>=sum.size()){
+                        in5 = in5 + 1;
+                        if (in5 >= sum.size()) {
                             add5.setEnabled(false);
                         }
                     }
@@ -477,21 +472,21 @@ minus0.setEnabled(true);
         minus5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(in5>0){
-                    in5=in5-1;
+                if (in5 > 0) {
+                    in5 = in5 - 1;
 
                     double val5 = sum.get(in5);
 
 
                     x5 = x5 - Integer.valueOf((int) val5);
                     sum5.setText(String.valueOf(x5));
-                    bal.setText("Total Balance = "+(balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                    bal.setText("Total Balance = " + (balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
                     total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                    if(in5==0){
+                    if (in5 == 0) {
                         minus5.setEnabled(false);
                     }
-                    if(in5<sum.size()){
+                    if (in5 < sum.size()) {
                         add5.setEnabled(true);
                     }
                 }
@@ -501,23 +496,22 @@ minus0.setEnabled(true);
             @Override
             public void onClick(View v) {
                 minus6.setEnabled(true);
-                if(in6<sum.size()){
+                if (in6 < sum.size()) {
 
                     double val6 = sum.get(in6);
 
-                    x6 = x6 +  Integer.valueOf((int) val6);
-                    if((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)>balance){
-                        Toast.makeText(getApplicationContext(),"Balance Low",Toast.LENGTH_LONG).show();
-                        x6 = x6-Integer.valueOf((int) val6);
+                    x6 = x6 + Integer.valueOf((int) val6);
+                    if ((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) > balance) {
+                        Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                        x6 = x6 - Integer.valueOf((int) val6);
 
-                    }
-                    else{
-                        bal.setText("Total Balance = "+((balance)-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                    } else {
+                        bal.setText("Total Balance = " + ((balance) - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
                         sum6.setText(String.valueOf(x6));
                         total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                        in6=in6+1;
-                        if(in6>=sum.size()){
+                        in6 = in6 + 1;
+                        if (in6 >= sum.size()) {
                             add6.setEnabled(false);
                         }
                     }
@@ -528,21 +522,21 @@ minus0.setEnabled(true);
         minus6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(in6>0){
-                    in6=in6-1;
+                if (in6 > 0) {
+                    in6 = in6 - 1;
 
                     double val6 = sum.get(in6);
 
 
                     x6 = x6 - Integer.valueOf((int) val6);
                     sum6.setText(String.valueOf(x6));
-                    bal.setText("Total Balance = "+(balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                    bal.setText("Total Balance = " + (balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
                     total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                    if(in6==0){
+                    if (in6 == 0) {
                         minus6.setEnabled(false);
                     }
-                    if(in6<sum.size()){
+                    if (in6 < sum.size()) {
                         add6.setEnabled(true);
                     }
                 }
@@ -552,23 +546,22 @@ minus0.setEnabled(true);
             @Override
             public void onClick(View v) {
                 minus7.setEnabled(true);
-                if(in7<sum.size()){
+                if (in7 < sum.size()) {
 
                     double val7 = sum.get(in7);
 
-                    x7 = x7 +  Integer.valueOf((int) val7);
-                    if((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)>balance){
-                        Toast.makeText(getApplicationContext(),"Balance Low",Toast.LENGTH_LONG).show();
-                        x7 = x7-Integer.valueOf((int) val7);
+                    x7 = x7 + Integer.valueOf((int) val7);
+                    if ((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) > balance) {
+                        Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                        x7 = x7 - Integer.valueOf((int) val7);
 
-                    }
-                    else{
-                        bal.setText("Total Balance = "+((balance)-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                    } else {
+                        bal.setText("Total Balance = " + ((balance) - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
                         sum7.setText(String.valueOf(x7));
                         total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                        in7=in7+1;
-                        if(in7>=sum.size()){
+                        in7 = in7 + 1;
+                        if (in7 >= sum.size()) {
                             add7.setEnabled(false);
                         }
                     }
@@ -579,21 +572,21 @@ minus0.setEnabled(true);
         minus7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(in7>0){
-                    in7=in7-1;
+                if (in7 > 0) {
+                    in7 = in7 - 1;
 
                     double val7 = sum.get(in7);
 
 
                     x7 = x7 - Integer.valueOf((int) val7);
                     sum7.setText(String.valueOf(x7));
-                    bal.setText("Total Balance = "+(balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                    bal.setText("Total Balance = " + (balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
                     total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                    if(in7==0){
+                    if (in7 == 0) {
                         minus7.setEnabled(false);
                     }
-                    if(in7<sum.size()){
+                    if (in7 < sum.size()) {
                         add7.setEnabled(true);
                     }
                 }
@@ -603,23 +596,22 @@ minus0.setEnabled(true);
             @Override
             public void onClick(View v) {
                 minus8.setEnabled(true);
-                if(in8<sum.size()){
+                if (in8 < sum.size()) {
 
                     double val8 = sum.get(in8);
 
-                    x8 = x8 +  Integer.valueOf((int) val8);
-                    if((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)>balance){
-                        Toast.makeText(getApplicationContext(),"Balance Low",Toast.LENGTH_LONG).show();
-                        x8 = x8-Integer.valueOf((int) val8);
+                    x8 = x8 + Integer.valueOf((int) val8);
+                    if ((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) > balance) {
+                        Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                        x8 = x8 - Integer.valueOf((int) val8);
 
-                    }
-                    else{
+                    } else {
                         sum8.setText(String.valueOf(x8));
-                        bal.setText("Total Balance = "+((balance)-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                        bal.setText("Total Balance = " + ((balance) - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
                         total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                        in8=in8+1;
-                        if(in8>=sum.size()){
+                        in8 = in8 + 1;
+                        if (in8 >= sum.size()) {
                             add8.setEnabled(false);
                         }
                     }
@@ -630,21 +622,21 @@ minus0.setEnabled(true);
         minus8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(in8>0){
-                    in8=in8-1;
+                if (in8 > 0) {
+                    in8 = in8 - 1;
 
                     double val8 = sum.get(in8);
 
 
                     x8 = x8 - Integer.valueOf((int) val8);
                     sum8.setText(String.valueOf(x8));
-                    bal.setText("Total Balance = "+(balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                    bal.setText("Total Balance = " + (balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
                     total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                    if(in8==0){
+                    if (in8 == 0) {
                         minus8.setEnabled(false);
                     }
-                    if(in8<sum.size()){
+                    if (in8 < sum.size()) {
                         add8.setEnabled(true);
                     }
                 }
@@ -654,23 +646,22 @@ minus0.setEnabled(true);
             @Override
             public void onClick(View v) {
                 minus9.setEnabled(true);
-                if(in9<sum.size()){
+                if (in9 < sum.size()) {
 
                     double val9 = sum.get(in9);
 
-                    x9 = x9 +  Integer.valueOf((int) val9);
-                    if((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)>balance){
-                        Toast.makeText(getApplicationContext(),"Balance Low",Toast.LENGTH_LONG).show();
-                        x9 = x9-Integer.valueOf((int) val9);
+                    x9 = x9 + Integer.valueOf((int) val9);
+                    if ((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) > balance) {
+                        Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                        x9 = x9 - Integer.valueOf((int) val9);
 
-                    }
-                    else{
-                        bal.setText("Total Balance = "+((balance)-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                    } else {
+                        bal.setText("Total Balance = " + ((balance) - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
                         sum9.setText(String.valueOf(x9));
                         total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                        in9=in9+1;
-                        if(in9>=sum.size()){
+                        in9 = in9 + 1;
+                        if (in9 >= sum.size()) {
                             add9.setEnabled(false);
                         }
                     }
@@ -682,142 +673,433 @@ minus0.setEnabled(true);
         minus9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(in9>0){
-                    in9=in9-1;
+                if (in9 > 0) {
+                    in9 = in9 - 1;
 
                     double val9 = sum.get(in9);
 
 
                     x9 = x9 - Integer.valueOf((int) val9);
                     sum9.setText(String.valueOf(x9));
-                    bal.setText("Total Balance = "+(balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
+                    bal.setText("Total Balance = " + (balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)));
 
                     total.setText("Total amount = " + String.valueOf(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9));
-                    if(in9==0){
+                    if (in9 == 0) {
                         minus9.setEnabled(false);
                     }
-                    if(in9<sum.size()){
+                    if (in9 < sum.size()) {
                         add9.setEnabled(true);
                     }
                 }
             }
         });
     }
+    */
+
+    public void setsum() {
+        add0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ((balance-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number) < number) {
+                    Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                } else {
+                    x0=x0+1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number));
+                    sum0.setText(String.valueOf(x0));
+
+                }
+            }
+        });
+        minus0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (x0!=0) {
+                    x0=x0-1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)*number));
+                    sum0.setText(String.valueOf(x0));
+
+                }
+            }
+        });
+
+        add1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ((balance-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number) < number) {
+                    Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                } else {
+                    x1=x1+1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number));
+                    sum1.setText(String.valueOf(x1));
+
+                }
+            }
+        });
+        minus1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (x1!=0) {
+                    x1=x1-1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)*number));
+                    sum1.setText(String.valueOf(x1));
+
+                }
+            }
+        });
+
+        add2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ((balance-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number) < number) {
+                    Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                } else {
+                    x2=x2+1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number));
+                    sum2.setText(String.valueOf(x2));
+
+                }
+            }
+        });
+        minus2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (x2!=0) {
+                    x2=x2-1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)*number));
+                    sum2.setText(String.valueOf(x2));
+
+                }
+            }
+        });
+
+        add3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ((balance-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number) < number) {
+                    Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                } else {
+                    x3=x3+1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number));
+                    sum3.setText(String.valueOf(x3));
+
+                }
+            }
+        });
+        minus3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (x3!=0) {
+                    x3=x3-1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)*number));
+                    sum3.setText(String.valueOf(x3));
+
+                }
+            }
+        });
+
+        add4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ((balance-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number) < number) {
+                    Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                } else {
+                    x4=x4+1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number));
+                    sum4.setText(String.valueOf(x4));
+
+                }
+            }
+        });
+        minus4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (x4!=0) {
+                    x4=x4-1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)*number));
+                    sum4.setText(String.valueOf(x4));
+
+                }
+            }
+        });
+
+        add5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ((balance-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number) < number) {
+                    Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                } else {
+                    x5=x5+1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number));
+                    sum5.setText(String.valueOf(x5));
+
+                }
+            }
+        });
+        minus5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (x5!=0) {
+                    x5=x5-1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)*number));
+                    sum5.setText(String.valueOf(x5));
+
+                }
+            }
+        });
+
+        add6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ((balance-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number) < number) {
+                    Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                } else {
+                    x6=x6+1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number));
+                    sum6.setText(String.valueOf(x6));
+
+                }
+            }
+        });
+        minus6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (x6!=0) {
+                    x6=x6-1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)*number));
+                    sum6.setText(String.valueOf(x6));
+
+                }
+            }
+        });
+
+        add7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ((balance-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number) < number) {
+                    Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                } else {
+                    x7=x7+1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number));
+                    sum7.setText(String.valueOf(x7));
+
+                }
+            }
+        });
+        minus7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (x7!=0) {
+                    x7=x7-1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)*number));
+                    sum7.setText(String.valueOf(x7));
+
+                }
+            }
+        });
+
+        add8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ((balance-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number) < number) {
+                    Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                } else {
+                    x8=x8+1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number));
+                    sum8.setText(String.valueOf(x8));
+
+                }
+            }
+        });
+        minus8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (x8!=0) {
+                    x8=x8-1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)*number));
+                    sum8.setText(String.valueOf(x8));
+
+                }
+            }
+        });
+
+        add9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ((balance-(x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number) < number) {
+                    Toast.makeText(getApplicationContext(), "Balance Low", Toast.LENGTH_LONG).show();
+                } else {
+                    x9=x9+1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number));
+                    sum9.setText(String.valueOf(x9));
+
+                }
+            }
+        });
+        minus9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (x9!=0) {
+                    x9=x9-1;
+                    int b=balance-((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) * number);
+                    bal.setText("Total Balance = " + b);
+                    total.setText("Total amount = " + String.valueOf((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)*number));
+                    sum9.setText(String.valueOf(x9));
+
+                }
+            }
+        });
+    }
 
     public void confirm(View view) {
-if((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9)>0){
-    progressDialog1.show();
-    for(int i=0;i<values.size();i++){
-        int j=0;
-        if(x0== values.get(i)){
-            j=j+x0;
-        }
-        if(x1== values.get(i)){
-            j=j+x1;
-        }
-        if(x2== values.get(i)){
-            j=j+x2;
-        }
-        if(x3== values.get(i)){
-            j=j+x3;
-        }
-        if(x4== values.get(i)){
-            j=j+x4;
-        }
-        if(x5== values.get(i)){
-            j=j+x5;
-        }
-        if(x6== values.get(i)){
-            j=j+x6;
-        }
-        if(x7== values.get(i)){
-            j=j+x7;
-        }
-        if(x8== values.get(i)){
-            j=j+x8;
-        }
-        if(x9== values.get(i)){
-            j=j+x9;
-        }
-        amount.add(j);
+        if ((x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9) > 0) {
+            progressDialog1.show();
+            for (int i = 0; i < values.size(); i++) {
+                int j = 0;
+                if (x0 == values.get(i)) {
+                    j = j + x0;
+                }
+                if (x1 == values.get(i)) {
+                    j = j + x1;
+                }
+                if (x2 == values.get(i)) {
+                    j = j + x2;
+                }
+                if (x3 == values.get(i)) {
+                    j = j + x3;
+                }
+                if (x4 == values.get(i)) {
+                    j = j + x4;
+                }
+                if (x5 == values.get(i)) {
+                    j = j + x5;
+                }
+                if (x6 == values.get(i)) {
+                    j = j + x6;
+                }
+                if (x7 == values.get(i)) {
+                    j = j + x7;
+                }
+                if (x8 == values.get(i)) {
+                    j = j + x8;
+                }
+                if (x9 == values.get(i)) {
+                    j = j + x9;
+                }
+                amount.add(j);
 
-    }
-    System.out.println(values.size());
-    for(a=0;a<amount.size();a++){
-        final int va = amount.get(a);
-        System.out.println("confirm lsitener");
+            }
+            System.out.println(values.size());
+            for (a = 0; a < amount.size(); a++) {
+                final int va = amount.get(a);
+                System.out.println("confirm lsitener");
 
 
-        db.collection("currentgame")
-                .whereEqualTo("value", val.get(a))
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        System.out.println("complete listener");
+                db.collection("currentgame")
+                        .whereEqualTo("value", val.get(a))
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                System.out.println("complete listener");
 
-                        if (task.isSuccessful()) {
-                            System.out.println("task successful");
+                                if (task.isSuccessful()) {
+                                    System.out.println("task successful");
 
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                System.out.println("querrying");
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        System.out.println("querrying");
 
-                                int amt,users;
-                                String docid;
-                                amt = document.getDouble("amount").intValue();
-                                users = document.getDouble("users").intValue();
-                                docid = document.getString("docid");
-                                Map<String, Object> data = new HashMap<>();
-                                if(va==0){
-                                    data.put("amount", amt);
-                                    data.put("users", users);
-                                }else{
-                                    int am = amt + va;
-                                    data.put("amount", am);
-                                    data.put("users", users+1);
+                                        int amt, users;
+                                        String docid;
+                                        amt = document.getDouble("amount").intValue();
+                                        users = document.getDouble("users").intValue();
+                                        docid = document.getString("docid");
+                                        Map<String, Object> data = new HashMap<>();
+                                        if (va == 0) {
+                                            data.put("amount", amt);
+                                            data.put("users", users);
+                                        } else {
+                                            int am = amt + va;
+                                            data.put("amount", am);
+                                            data.put("users", users + 1);
+                                        }
+
+
+                                        db.collection("currentgame").document(docid)
+                                                .set(data, SetOptions.merge())
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        flag++;
+                                                        System.out.println(a);
+                                                        if (flag == (amount.size() - 1)) {
+                                                            bets_updater();
+                                                            System.out.println("yes its done");
+
+                                                        }
+
+                                                    }
+                                                })
+
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                                        progressDialog1.dismiss();
+                                                    }
+                                                });
+
+
+                                    }
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "OOPS! Some error occured. Restarting the app may help.", Toast.LENGTH_LONG).show();
+                                    progressDialog1.dismiss();
                                 }
-
-
-                                db.collection("currentgame").document(docid)
-                                        .set(data, SetOptions.merge())
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                flag++;
-                                                System.out.println(a);
-                                                if(flag==(amount.size()-1)){
-                                                    bets_updater();
-                                                    System.out.println("yes its done");
-
-                                                }
-
-                                            }
-                                        })
-
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
-                                                progressDialog1.dismiss();
-                                            }
-                                        });
-
-
-
                             }
-                        } else {
-                            Toast.makeText(getApplicationContext(),"OOPS! Some error occured. Restarting the app may help.",Toast.LENGTH_LONG).show();
-                            progressDialog1.dismiss();
-                        }
-                    }
-                });
-    }
+                        });
+            }
 
 
-}
-else{
-    Toast.makeText(getApplicationContext(),"Please Choose a Valid Amount.",Toast.LENGTH_LONG).show();
-}
+        } else {
+            Toast.makeText(getApplicationContext(), "Please Choose a Valid Amount.", Toast.LENGTH_LONG).show();
+        }
 
     }
 
@@ -834,68 +1116,67 @@ else{
         numbers.add(x8);
         numbers.add(x9);
 
-        for(int k=0;k<=9;k++){
+        for (int k = 0; k <= 9; k++) {
 
             final int finalK = k;
             db.collection("bets")
-                .whereEqualTo("number", k)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                int amt=0,users=0;
-                                String docid;
-                                amt = document.getDouble("amount").intValue();
-                                users = document.getDouble("users").intValue();
-                                docid = document.getId();
-                                Map<String, Object> data = new HashMap<>();
-                                if(numbers.get(finalK)==0){
-                                    data.put("amount", amt);
-                                    data.put("users", users);
-                                }else{
-                                    int am = amt + numbers.get(finalK);
-                                    data.put("amount", am);
-                                    data.put("users", users+1);
+                    .whereEqualTo("number", k)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    int amt = 0, users = 0;
+                                    String docid;
+                                    amt = document.getDouble("amount").intValue();
+                                    users = document.getDouble("users").intValue();
+                                    docid = document.getId();
+                                    Map<String, Object> data = new HashMap<>();
+                                    if (numbers.get(finalK) == 0) {
+                                        data.put("amount", amt);
+                                        data.put("users", users);
+                                    } else {
+                                        int am = amt + numbers.get(finalK);
+                                        data.put("amount", am);
+                                        data.put("users", users + 1);
+                                    }
+
+
+                                    db.collection("bets").document(docid)
+                                            .set(data, SetOptions.merge())
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    flag1++;
+                                                    if (flag1 == 10) {
+                                                        user_updater();
+
+                                                    }
+
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                                    progressDialog1.dismiss();
+                                                }
+                                            });
+
+
                                 }
-
-
-                                db.collection("bets").document(docid)
-                                        .set(data, SetOptions.merge())
-                                      .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                          @Override
-                                          public void onComplete(@NonNull Task<Void> task) {
-                                              flag1++;
-                                              if(flag1==10){
-                                                  user_updater();
-
-                                              }
-
-                                          }
-                                      })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
-                                                progressDialog1.dismiss();
-                                            }
-                                        });
-
-
-
+                            } else {
+                                Toast.makeText(getApplicationContext(), "OOPS! Some error occured. Restarting the app may help.", Toast.LENGTH_LONG).show();
+                                progressDialog1.dismiss();
                             }
-                        } else {
-                            Toast.makeText(getApplicationContext(),"OOPS! Some error occured. Restarting the app may help.",Toast.LENGTH_LONG).show();
-                        progressDialog1.dismiss();
                         }
-                    }
-                });
-    }
+                    });
+        }
     }
 
     private void user_updater() {
-        final int updated_balance =balance - (x0+x1+x2+x3+x4+x5+x6+x7+x8+x9);
+        final int updated_balance = balance - (x0 + x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9);
         Map<String, Object> data = new HashMap<>();
         data.put("balance", updated_balance);
         data.put("bets_placed", true);
@@ -919,12 +1200,12 @@ else{
 
                         final SharedPreferences.Editor editor = sharedpreferences.edit();
 
-                        editor.putBoolean("bets_placed",true);
-                        editor.putInt("balance",updated_balance);
+                        editor.putBoolean("bets_placed", true);
+                        editor.putInt("balance", updated_balance);
                         editor.commit();
 
 
-System.out.println("Completed");
+                        System.out.println("Completed");
                         Intent intent = new Intent(buyTicket.this, profile.class);
                         startActivity(intent);
                         finish();
@@ -934,7 +1215,7 @@ System.out.println("Completed");
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                         progressDialog1.dismiss();
                     }
                 });
